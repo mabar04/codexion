@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <limits.h>
+#include <string.h>
 
 typedef struct s_sim        t_sim;
 typedef struct s_dongle     t_dongle;
@@ -68,4 +69,9 @@ typedef struct s_sim
 // }   t_scheduler;
 
 void init_sim(t_sim *sim,int ac, char **args);
+int check_valid(char *s);
+long valid_long(char *s);
+int valid_int(char *s);
+int check_scheduler(char *s);
+void check_values(char **av);
 #endif

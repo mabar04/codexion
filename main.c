@@ -3,10 +3,13 @@
 int main(int ac, char **av)
 {
     t_sim sim;
-    for (int  i = 0; i < ac; i++)
+    if (ac != 9)
     {
-        printf("%s\n", av[i]);
+        printf("Missing arguments\n");
+        return 2;
     }
-    init_sim(&sim,ac,av);
-    
+    printf("Starting the program\n");
+    check_values(av);
+    init_sim(&sim, ac, av);
+    return 1;
 }
