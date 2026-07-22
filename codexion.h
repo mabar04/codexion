@@ -74,4 +74,5 @@ long valid_long(char *s);
 int valid_int(char *s);
 int check_scheduler(char *s);
 void check_values(char **av);
+void free_coders(t_coder *coders, int number_coders);
 #endif
