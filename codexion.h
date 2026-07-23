@@ -17,7 +17,7 @@ typedef struct s_coder      t_coder;
 
 typedef struct s_coder
 {
-    int coder_id;
+    size_t coder_id;
     int number_compiles;
     long last_compile_start;
 
@@ -32,9 +32,10 @@ typedef struct s_coder
 
 typedef struct s_dongle
 {
-    int dongle_id;
+    size_t dongle_id;
     long cooldown_time;
     long                available_at;
+    int is_used;
 
     pthread_mutex_t     mutex;
     pthread_cond_t      cond;
@@ -48,9 +49,10 @@ typedef struct s_sim
     long time_to_burnout;
     int required_compiles;
     long time_to_cooldown;
+    long    start_time;
 
-    int number_of_coders;
-    int number_of_dongles;
+    size_t number_of_coders;
+    size_t number_of_dongles;
 
     int stop;
 
@@ -68,11 +70,15 @@ typedef struct s_sim
 //     EDF
 // }   t_scheduler;
 
-void init_sim(t_sim *sim,int ac, char **args);
+int init_sim(t_sim *sim, char **args);
+int check_values(char **av);
 int check_valid(char *s);
 long valid_long(char *s);
 int valid_int(char *s);
 int check_scheduler(char *s);
-void check_values(char **av);
-void free_coders(t_coder *coders, int number_coders);
+void free_coders(t_coder *coders, size_t number_coders);
+void free_sim(t_sim *sim);
+void print_sim(t_sim *sim);
+int create_mutex_cond(t_dongle *dongle);
+void clear_mutexex(t_sim *sim, size_t k);
 #endif
