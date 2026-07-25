@@ -22,5 +22,6 @@ void clear_mutexex(t_sim *sim, size_t k)
     {
         pthread_mutex_destroy(&(sim->dongles[i].mutex));
         pthread_cond_destroy(&(sim->dongles[i].cond));
+        i++;
     }
 }

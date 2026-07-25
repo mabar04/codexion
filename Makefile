@@ -8,7 +8,7 @@ SRC = main.c \
       check.c \
       errors_handeling.c \
       helper_functions.c \
-      parsing.c \
+      helper_functions2.c \
       simalation_creation.c
 
 OBJ = $(SRC:.c=.o)

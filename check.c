@@ -19,7 +19,7 @@ int check_valid(char *s)
     if(*s == '+')
         s++;
 
-    while (*s >= '0' && *s <= '9' )
+    while (*s >= '0' && *s <= '9')
         s++;
 
     if(*s == '\0')
@@ -33,6 +33,8 @@ long valid_long(char *s)
     unsigned long result;
     size_t i = 0;
     result = 0;
+    if (!check_valid(s))
+        return -1;
     while (s[i] >= 9 && s[i] <= 13)
         i++;
     while (s[i])

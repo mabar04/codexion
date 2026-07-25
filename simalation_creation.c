@@ -75,14 +75,27 @@ int    init_sim(t_sim *sim, char **argv)
         return 0;
     sim->dongles = coders_to_dongles(sim);
     if (!sim->dongles)
-        return (free_coders(sim->coders, sim->number_of_coders), 0);
+        return (free(sim->coders), 0);
     if (initialize_dongles(sim) == 0)
     {
         free(sim->coders);
         free(sim->dongles);
         return 0;
     }
-    pthread_mutex_init(&sim->print_mutex, NULL);
-    pthread_mutex_init(&sim->stop_mutex, NULL);
+    if (pthread_mutex_init(&sim->print_mutex, NULL) != 0)
+    {
+        clear_mutexex(sim, sim->number_of_dongles);
+        free(sim->coders);
+        free(sim->dongles);
+        return 0;
+    }
+    if (pthread_mutex_init(&sim->stop_mutex, NULL) != 0)
+    {
+        pthread_mutex_destroy(&sim->print_mutex);
+        clear_mutexex(sim, sim->number_of_dongles);
+        free(sim->coders);
+        free(sim->dongles);
+        return 0;
+    }
     return 1;
 }

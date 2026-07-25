@@ -1,14 +1,5 @@
 # include "codexion.h"
 
-void free_coders(t_coder *coders, size_t number_coders)
-{
-    size_t i;
-
-    for (i = 0; i < number_coders; i++)
-        free(&coders[i]);
-    free(coders);
-}
-
 void free_sim(t_sim *sim)
 {
     size_t i;
