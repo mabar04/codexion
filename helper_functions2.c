@@ -25,3 +25,23 @@ void clear_mutexex(t_sim *sim, size_t k)
         i++;
     }
 }
+
+long get_time_ms(void)
+{
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000L) + (tv.tv_usec / 1000L);
+}
+
+void sim_printf(t_coder *coder, long time, char *task)
+{
+    pthread_mutex_lock(&coder->sim->print_mutex);
+    printf("%lu %zu %s", time, coder->coder_id, task);
+    pthread_mutex_unlock(&coder->sim->print_mutex);
+}
+
+void	msleep(long milliseconds)
+{
+	usleep(milliseconds * 1000);
+}

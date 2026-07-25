@@ -14,7 +14,7 @@ static t_coder *initialise_coders(t_sim *sim, size_t number_of_coders)
         coders[i].coder_id = i + 1;
         coders[i].sim = sim;
         coders[i].number_compiles = 0;
-        coders[i].last_compile_start = 0;
+        coders[i].last_compile_start = sim->start_time;
         i++;
     }
     return coders;
@@ -48,6 +48,7 @@ int initialize_dongles(t_sim *sim)
         (*sim).dongles[i].dongle_id = i + 1;
         (*sim).dongles[i].is_used = 0;
         (*sim).dongles[i].available_at = 0;
+        (*sim).dongles[i].owner = NULL;
         if(create_mutex_cond(&(sim->dongles[i])) == 0)
         {
             clear_mutexex(sim, i);
@@ -69,7 +70,7 @@ int    init_sim(t_sim *sim, char **argv)
     sim->required_compiles = valid_int(argv[5]);
     sim->time_to_cooldown = valid_long(argv[6]);
     sim->stop = 0;
-    sim->start_time = 0;
+    sim->start_time = get_time_ms();
     sim->coders = initialise_coders(sim, sim->number_of_coders);
     if (!sim->coders)
         return 0;

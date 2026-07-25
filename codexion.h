@@ -39,6 +39,7 @@ typedef struct s_dongle
 
     pthread_mutex_t     mutex;
     pthread_cond_t      cond;
+    t_coder *owner;
 } t_dongle;
 
 typedef struct s_sim
@@ -76,9 +77,17 @@ int check_valid(char *s);
 long valid_long(char *s);
 int valid_int(char *s);
 int check_scheduler(char *s);
-void free_coders(t_coder *coders, size_t number_coders);
 void free_sim(t_sim *sim);
 void print_sim(t_sim *sim);
 int create_mutex_cond(t_dongle *dongle);
 void clear_mutexex(t_sim *sim, size_t k);
+void acquire_dongle(t_dongle *dongle);
+void release_dongle(t_dongle *dongle);
+int try_acquire_dongle(t_dongle *dongle);
+void compile(t_coder *coder);
+void refactor(t_coder *coder);
+void debug(t_coder *coder);
+long get_time_ms(void);
+void sim_printf(t_coder *coder, long time, char *task);
+void    msleep(long milliseconds);
 #endif
