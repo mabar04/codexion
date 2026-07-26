@@ -27,6 +27,8 @@ typedef struct s_coder
     t_dongle   *right_dongle;
     t_sim *sim;
 
+    pthread_mutex_t last_compile_mutex;
+
 }   t_coder;
 
 
@@ -90,4 +92,5 @@ void debug(t_coder *coder);
 long get_time_ms(void);
 void sim_printf(t_coder *coder, long time, char *task);
 void    msleep(long milliseconds);
+void free_coder_mutex(t_coder *coders, size_t k);
 #endif

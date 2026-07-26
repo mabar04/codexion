@@ -1,7 +1,5 @@
 #include "codexion.h"
 
-
-
 void acquire_dongle(t_dongle *dongle)
 {
     pthread_mutex_lock(&dongle->mutex);
@@ -30,8 +28,6 @@ int try_acquire_dongle(t_dongle *dongle)
             dongle->is_used = 1;
             success = 1;
     }
-    else
-        success = 0;
     pthread_mutex_unlock(&dongle->mutex);
     return success;
 }

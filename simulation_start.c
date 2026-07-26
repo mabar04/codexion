@@ -1,9 +1,18 @@
 #include "codexion.h"
 
+int check_simulation_running(t_sim *sim)
+{
+    int i;
+
+    pthread_mutex_lock(&sim->stop_mutex);
+    i = sim->stop;
+    pthread_mutex_unlock(&sim->stop_mutex);
+    return i;
+}
 
 void coder_simulation(t_coder *coder)
 {
-    while(!coder->sim->stop)
+    while(!check_simulation_running(coder->sim))
     {
         acquire_dongle(coder->left_dongle);
         if (try_acquire_dongle(coder->right_dongle))
@@ -19,7 +28,7 @@ void coder_simulation(t_coder *coder)
         else
         {
             release_dongle(coder->left_dongle);
-            usleep(500);
+            msleep(500);
         }
     }
 }

@@ -3,19 +3,21 @@
 
 void compile(t_coder *coder)
 {
+    pthread_mutex_lock(&coder->last_compile_mutex);
+    coder->last_compile_start = get_time_ms() ;
+    pthread_mutex_unlock(&coder->last_compile_mutex);
     sim_printf(coder, get_time_ms()- coder->sim->start_time, "is compiling");
-    coder->last_compile_start = coder->sim->start_time - get_time_ms();
     msleep(coder->sim->time_to_compile);
 }
 
 void refactor(t_coder *coder)
 {
-    sim_printf(coder, get_time_ms() - coder->sim->start_time, "is debugging");
+    sim_printf(coder, get_time_ms() - coder->sim->start_time, "is refactoring");
     msleep(coder->sim->time_to_refactor);
 }
 
 void debug(t_coder *coder)
 {
-    sim_printf(coder, get_time_ms()- coder->sim->start_time, "is refactoring");
+    sim_printf(coder, get_time_ms() - coder->sim->start_time, "is debugging");
     msleep(coder->sim->time_to_debug);
 }

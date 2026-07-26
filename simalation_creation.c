@@ -15,6 +15,12 @@ static t_coder *initialise_coders(t_sim *sim, size_t number_of_coders)
         coders[i].sim = sim;
         coders[i].number_compiles = 0;
         coders[i].last_compile_start = sim->start_time;
+        if (pthread_mutex_init(&coders[i].last_compile_mutex, NULL) != 0)
+        {
+            free_coder_mutex(coders, i);
+            free(coders);
+            return NULL;
+        }
         i++;
     }
     return coders;
@@ -86,6 +92,7 @@ int    init_sim(t_sim *sim, char **argv)
     if (pthread_mutex_init(&sim->print_mutex, NULL) != 0)
     {
         clear_mutexex(sim, sim->number_of_dongles);
+        free_coder_mutex(sim->coders, sim->number_of_coders);
         free(sim->coders);
         free(sim->dongles);
         return 0;
@@ -94,6 +101,7 @@ int    init_sim(t_sim *sim, char **argv)
     {
         pthread_mutex_destroy(&sim->print_mutex);
         clear_mutexex(sim, sim->number_of_dongles);
+        free_coder_mutex(sim->coders, sim->number_of_coders);
         free(sim->coders);
         free(sim->dongles);
         return 0;

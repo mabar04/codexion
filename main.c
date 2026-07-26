@@ -4,10 +4,10 @@ void *coder_routine(void *a)
 { 
     t_coder *coder;
    
-    while(pthread_mutex_lock(&coder->sim->stop_mutex), !coder->sim->stop)
-    {
+    // while(pthread_mutex_lock(&coder->sim->stop_mutex), !coder->sim->stop)
+    // {
 
-    }
+    // }
     return NULL;
 }
 

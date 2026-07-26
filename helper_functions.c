@@ -44,3 +44,27 @@ void print_sim(t_sim *sim)
 
     printf("================================\n");
 }
+
+void free_coder_mutex(t_coder *coders, size_t k)
+{
+    size_t i;
+
+    i = 0;
+    while(i < k)
+    {
+        pthread_mutex_destroy(&(coders[i].last_compile_mutex));
+        i++;
+    }
+}
+
+void wake_up_coders(t_sim *sim)
+{
+    size_t i;
+
+    i = 0;
+    while (i < sim->number_of_dongles)
+    {
+        pthread_cond_broadcast(&sim->dongles[i].cond);
+        i++;
+    }
+}
