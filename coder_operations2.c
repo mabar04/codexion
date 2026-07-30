@@ -3,9 +3,9 @@
 
 void compile(t_coder *coder)
 {
-    pthread_mutex_lock(&coder->last_compile_mutex);
+    pthread_mutex_lock(&coder->state_mutex);
     coder->last_compile_start = get_time_ms() ;
-    pthread_mutex_unlock(&coder->last_compile_mutex);
+    pthread_mutex_unlock(&coder->state_mutex);
     sim_printf(coder, get_time_ms()- coder->sim->start_time, "is compiling");
     msleep(coder->sim->time_to_compile);
 }

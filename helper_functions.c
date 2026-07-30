@@ -52,7 +52,7 @@ void free_coder_mutex(t_coder *coders, size_t k)
     i = 0;
     while(i < k)
     {
-        pthread_mutex_destroy(&(coders[i].last_compile_mutex));
+        pthread_mutex_destroy(&(coders[i].state_mutex));
         i++;
     }
 }

@@ -20,6 +20,7 @@ typedef struct s_coder
     size_t coder_id;
     int number_compiles;
     long last_compile_start;
+    int finished;
 
     pthread_t thread;
 
@@ -27,7 +28,7 @@ typedef struct s_coder
     t_dongle   *right_dongle;
     t_sim *sim;
 
-    pthread_mutex_t last_compile_mutex;
+    pthread_mutex_t state_mutex;
 
 }   t_coder;
 
@@ -42,6 +43,7 @@ typedef struct s_dongle
     pthread_mutex_t     mutex;
     pthread_cond_t      cond;
     t_coder *owner;
+    t_sim *sim;
 } t_dongle;
 
 typedef struct s_sim
@@ -83,7 +85,7 @@ void free_sim(t_sim *sim);
 void print_sim(t_sim *sim);
 int create_mutex_cond(t_dongle *dongle);
 void clear_mutexex(t_sim *sim, size_t k);
-void acquire_dongle(t_dongle *dongle);
+int acquire_dongle(t_dongle *dongle);
 void release_dongle(t_dongle *dongle);
 int try_acquire_dongle(t_dongle *dongle);
 void compile(t_coder *coder);
@@ -93,4 +95,5 @@ long get_time_ms(void);
 void sim_printf(t_coder *coder, long time, char *task);
 void    msleep(long milliseconds);
 void free_coder_mutex(t_coder *coders, size_t k);
+int check_simulation_running(t_sim *sim);
 #endif
