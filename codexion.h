@@ -96,4 +96,12 @@ void sim_printf(t_coder *coder, long time, char *task);
 void    msleep(long milliseconds);
 void free_coder_mutex(t_coder *coders, size_t k);
 int check_simulation_running(t_sim *sim);
+int read_finished(t_coder *coder);
+int read_numbercompiles(t_coder *coder);
+void increment_compiles(t_coder *coder);
+long read_lastcompile(t_coder *coder);
+void modify_finished(t_coder *coder, int value);
+void write_lastcompile(t_coder *coder);
+void release_dongle_cooldown(t_dongle *dongle);
+struct timespec ms_to_timespec(long ms);
 #endif

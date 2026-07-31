@@ -11,6 +11,13 @@ int read_finished(t_coder *coder)
     return finished;
 }
 
+void modify_finished(t_coder *coder, int value)
+{
+    pthread_mutex_lock(&coder->state_mutex);
+    coder->finished = value;
+    pthread_mutex_unlock(&coder->state_mutex);
+}
+
 int read_numbercompiles(t_coder *coder)
 {
     int compiles;

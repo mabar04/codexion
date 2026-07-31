@@ -21,7 +21,7 @@ int check_all_finished(t_sim *sim)
     i = 0;
     while (i < sim->number_of_coders)
     {
-        if (sim->coders[i].finished == 1)
+        if (read_finished(&sim->coders[i]) == 1)
             finished_number++;
         i++;
     }
@@ -44,9 +44,7 @@ void *check_burnout(void *a)
         i = 0; 
         while (i < sim->number_of_coders)
         {
-            pthread_mutex_lock(&sim->coders[i].state_mutex); 
-            last_time = current_time - sim->coders[i].last_compile_start; 
-            pthread_mutex_unlock(&sim->coders[i].state_mutex); 
+            last_time = current_time - read_lastcompile(&sim->coders[i]); 
             if (last_time > sim->time_to_burnout || check_all_finished(sim))
             {
                 pthread_mutex_lock(&sim->stop_mutex); 
@@ -68,5 +66,6 @@ int monitor_thread(t_sim * sim)
     if (pthread_create(&monitor, NULL, &check_burnout, (void *)sim) != 0)
             return 0; 
         if (pthread_join(monitor, NULL) != 0) 
-        return 0; 
+        return 0;
+    return 1;
 }

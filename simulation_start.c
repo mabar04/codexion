@@ -16,17 +16,18 @@ void coder_simulation(t_coder *coder)
     { 
         if (!acquire_dongle(coder->left_dongle))
             return;
-        if (coder->number_compiles == coder->sim->required_compiles)
+        if (read_numbercompiles(coder) == coder->sim->required_compiles)
         {
-            coder->finished = 1;
+            release_dongle(coder->left_dongle);
+            modify_finished(coder, 1);
             return;
         }
         if (try_acquire_dongle(coder->right_dongle)) 
         { 
             compile(coder); 
-            coder->number_compiles++; 
-            release_dongle(coder->right_dongle); 
-            release_dongle(coder->left_dongle); 
+            increment_compiles(coder); 
+            release_dongle_cooldown(coder->right_dongle); 
+            release_dongle_cooldown(coder->left_dongle);
             debug(coder); 
             refactor(coder); 
         } 
