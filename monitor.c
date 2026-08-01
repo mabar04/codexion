@@ -45,17 +45,36 @@ void *check_burnout(void *a)
         while (i < sim->number_of_coders)
         {
             last_time = current_time - read_lastcompile(&sim->coders[i]); 
-            if (last_time > sim->time_to_burnout || check_all_finished(sim))
+            if (last_time > sim->time_to_burnout)
             {
-                pthread_mutex_lock(&sim->stop_mutex); 
-                sim->stop = 1; 
-                pthread_mutex_unlock(&sim->stop_mutex); 
+                pthread_mutex_lock(&sim->stop_mutex);
+                if (sim->stop)
+                {
+                    pthread_mutex_unlock(&sim->stop_mutex);
+                    return NULL;
+                }
+                sim->stop = 1;
+                pthread_mutex_unlock(&sim->stop_mutex);
+                sim_printf(&sim->coders[i], current_time - sim->start_time, "burned out");
                 awake_coders(sim); 
                 return NULL; 
             }
             i++; 
         }
-        msleep(1); 
+        if (check_all_finished(sim))
+        {
+            pthread_mutex_lock(&sim->stop_mutex);
+            if (sim->stop)
+            {
+                pthread_mutex_unlock(&sim->stop_mutex);
+                return NULL;
+            }
+            sim->stop = 1;
+            pthread_mutex_unlock(&sim->stop_mutex);
+            sim_completed(sim);
+            awake_coders(sim); 
+        }
+        usleep(1); 
     } return NULL; 
 } 
 

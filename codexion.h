@@ -93,7 +93,7 @@ void refactor(t_coder *coder);
 void debug(t_coder *coder);
 long get_time_ms(void);
 void sim_printf(t_coder *coder, long time, char *task);
-void    msleep(long milliseconds);
+void	msleep(long ms, t_sim *sim);
 void free_coder_mutex(t_coder *coders, size_t k);
 int check_simulation_running(t_sim *sim);
 int read_finished(t_coder *coder);
@@ -104,4 +104,5 @@ void modify_finished(t_coder *coder, int value);
 void write_lastcompile(t_coder *coder);
 void release_dongle_cooldown(t_dongle *dongle);
 struct timespec ms_to_timespec(long ms);
+void sim_completed(t_sim *sim);
 #endif

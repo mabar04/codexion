@@ -34,7 +34,7 @@ void coder_simulation(t_coder *coder)
         else 
         { 
             release_dongle(coder->left_dongle);
-            msleep(500);
+            usleep(500);
         }
     }   
 }

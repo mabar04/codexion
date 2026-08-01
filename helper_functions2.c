@@ -1,6 +1,5 @@
 #include "codexion.h"
 
-
 int create_mutex_cond(t_dongle *dongle)
 {
     if(pthread_mutex_init(&dongle->mutex, NULL) != 0)
@@ -36,12 +35,22 @@ long get_time_ms(void)
 
 void sim_printf(t_coder *coder, long time, char *task)
 {
+    if (check_simulation_running(coder->sim) && strcmp(task, "burned out") != 0)
+        return;
     pthread_mutex_lock(&coder->sim->print_mutex);
     printf("%lu %zu %s", time, coder->coder_id, task);
     pthread_mutex_unlock(&coder->sim->print_mutex);
 }
 
-void	msleep(long milliseconds)
+void	msleep(long ms, t_sim *sim)
 {
-	usleep(milliseconds * 1000);
+	long start;
+
+    start = get_time_ms();
+    while (!check_simulation_running(sim))
+    {
+        if (get_time_ms() - start >= ms)
+            break;
+        usleep(500);
+    }
 }
