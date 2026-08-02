@@ -3,20 +3,19 @@
 void *coder_routine(void *a) 
 { 
     t_coder *coder;
-   
-    // while(pthread_mutex_lock(&coder->sim->stop_mutex), !coder->sim->stop)
-    // {
 
-    // }
+    coder = (t_coder *)a;
+    while(!check_simulation_running(coder->sim))
+    {
+        coder_simulation(coder);
+    }
     return NULL;
 }
-
 
 static void initialise_threads(t_sim *sim)
 {
     size_t i;
-    size_t j;
-
+    
     i = 0;
     while (i < sim->number_of_coders)
     {
@@ -24,8 +23,14 @@ static void initialise_threads(t_sim *sim)
             break;
         i++;
     }
+}
+
+void join_threads(t_sim *sim)
+{
+    size_t j;
+
     j = 0;
-    while( j < i)
+    while( j < sim->number_of_coders)
     {
         pthread_join(sim->coders[j].thread, NULL);
         j++;
@@ -36,6 +41,7 @@ int main(int ac, char **av)
 {
     t_sim *sim;
     size_t i;
+    pthread_t monitor;
 
     i = 0;
     if (ac != 9)
@@ -43,7 +49,6 @@ int main(int ac, char **av)
         printf("Missing arguments\n");
         return 2;
     }
-    printf("Starting the program\n");
     if (check_values(av) == 0)
         return 2;
     sim = (t_sim *) malloc(sizeof(t_sim));
@@ -51,8 +56,19 @@ int main(int ac, char **av)
         return 3;
     if (init_sim(sim, av + 1) == 0)
         return (printf("Error in the inistialization\n"), free(sim), 4);
-    printf("Simulation Starts\n");
+    if (monitor_thread(sim, &monitor) == -1)
+    {
+        free_sim(sim);
+        return 20;    
+    }
     initialise_threads(sim);
+    if (pthread_join(monitor, NULL) != 0)
+    {
+        printf("[MAIN] ERROR: pthread_join failed.\n");
+        free_sim(sim);
+        return (80);
+    }
+    join_threads(sim);
     free_sim(sim);
     return 1;
 }

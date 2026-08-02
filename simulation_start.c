@@ -13,7 +13,7 @@ int check_simulation_running(t_sim *sim)
 void coder_simulation(t_coder *coder) 
 {
     while(!check_simulation_running(coder->sim)) 
-    { 
+    {
         if (!acquire_dongle(coder->left_dongle))
             return;
         if (read_numbercompiles(coder) == coder->sim->required_compiles)
@@ -23,9 +23,9 @@ void coder_simulation(t_coder *coder)
             return;
         }
         if (try_acquire_dongle(coder->right_dongle)) 
-        { 
+        {
             compile(coder); 
-            increment_compiles(coder); 
+            increment_compiles(coder);
             release_dongle_cooldown(coder->right_dongle); 
             release_dongle_cooldown(coder->left_dongle);
             debug(coder); 
@@ -36,5 +36,5 @@ void coder_simulation(t_coder *coder)
             release_dongle(coder->left_dongle);
             usleep(500);
         }
-    }   
+    }
 }

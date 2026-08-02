@@ -1,15 +1,16 @@
 NAME = codexion
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-THREAD_FLAGS = -pthread
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -g -O0
+THREAD_FLAGS = -lpthread
 
-SRC = main.c \
-      check.c \
-      errors_handeling.c \
-      helper_functions.c \
-      helper_functions2.c \
-      simalation_creation.c
+SRC = main.c monitor.c\
+      check.c coder_mutex.c coder_operations.c\
+      errors_handeling.c coder_operations2.c\
+      helper_functions.c coder_readmutex.c\
+      helper_functions2.c helper_functions3.c\
+      simalation_creation.c simulation_start.c\
+
 
 OBJ = $(SRC:.c=.o)
 

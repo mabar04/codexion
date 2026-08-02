@@ -6,7 +6,9 @@ int acquire_dongle(t_dongle *dongle)
 
     if(check_simulation_running(dongle->sim))
         return 0;
-    pthread_mutex_lock(&dongle->mutex); 
+    pthread_mutex_lock(&dongle->mutex);
+    if (dongle->owner != NULL)
+        sim_printf(dongle->owner, dongle->available_at, "dongle is availaible at");
     while(dongle->is_used || get_time_ms() < dongle->available_at) 
     {
         if (dongle->is_used)
@@ -23,7 +25,8 @@ int acquire_dongle(t_dongle *dongle)
             return 0;
         }
     }
-    dongle->is_used = 1; 
+    dongle->is_used = 1;
+    
     pthread_mutex_unlock(&dongle->mutex);
     return 1; 
 } 
@@ -46,7 +49,7 @@ int try_acquire_dongle(t_dongle *dongle)
     pthread_mutex_lock(&dongle->mutex); 
     if (dongle->is_used == 0 && get_time_ms() >= dongle->available_at) 
     {
-        dongle->is_used = 1; 
+        dongle->is_used = 1;
         success = 1; 
     } 
     pthread_mutex_unlock(&dongle->mutex); 

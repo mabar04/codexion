@@ -38,11 +38,11 @@ void sim_printf(t_coder *coder, long time, char *task)
     if (check_simulation_running(coder->sim) && strcmp(task, "burned out") != 0)
         return;
     pthread_mutex_lock(&coder->sim->print_mutex);
-    printf("%lu %zu %s", time, coder->coder_id, task);
+    printf("%lu %zu %s\n", time, coder->coder_id, task);
     pthread_mutex_unlock(&coder->sim->print_mutex);
 }
 
-void	msleep(long ms, t_sim *sim)
+void	msleep(t_sim *sim, long ms)
 {
 	long start;
 
@@ -51,6 +51,6 @@ void	msleep(long ms, t_sim *sim)
     {
         if (get_time_ms() - start >= ms)
             break;
-        usleep(500);
+        usleep(20);
     }
 }
