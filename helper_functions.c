@@ -95,7 +95,7 @@ void	print_sim_state(t_sim *sim)
 		printf("Dongle %zu\n", d->dongle_id);
 		printf("    address           : %p\n", (void *)d);
 		printf("    used              : %d\n", d->is_used);
-		printf("    cooldown          : %ld\n", d->cooldown_time);
+		printf("    cooldown          : %ld\n", d->sim->time_to_cooldown);
 		printf("    available_at      : %ld\n", d->available_at);
 
 		if (d->owner)

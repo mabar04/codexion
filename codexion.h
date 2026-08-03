@@ -36,7 +36,6 @@ typedef struct s_coder
 typedef struct s_dongle
 {
     size_t dongle_id;
-    long cooldown_time;
     long                available_at;
     int is_used;
 
