@@ -35,7 +35,7 @@ void release_dongle(t_dongle *dongle)
 { 
     pthread_mutex_lock(&dongle->mutex); 
     dongle->is_used = 0;
-    pthread_cond_broadcast(&dongle->cond);
+    pthread_cond_signal(&dongle->cond);
     pthread_mutex_unlock(&dongle->mutex); 
 } 
 
@@ -62,6 +62,6 @@ void release_dongle_cooldown(t_dongle *dongle)
     pthread_mutex_lock(&dongle->mutex); 
     dongle->is_used = 0;
     dongle->available_at = get_time_ms() + dongle->sim->time_to_cooldown;
-    pthread_cond_broadcast(&dongle->cond);
+    pthread_cond_signal(&dongle->cond);
     pthread_mutex_unlock(&dongle->mutex);
 } 

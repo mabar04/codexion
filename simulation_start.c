@@ -24,7 +24,6 @@ void coder_simulation(t_coder *coder)
             release_dongle_cooldown(coder->left_dongle);
             if (read_numbercompiles(coder) == coder->sim->required_compiles)
             {
-                release_dongle(coder->left_dongle);
                 modify_finished(coder, 1);
                 return;
             }
@@ -34,7 +33,7 @@ void coder_simulation(t_coder *coder)
         else 
         { 
             release_dongle(coder->left_dongle);
-            usleep(500);
+            pthread_cond_wait(&coder->right_dongle->cond, &coder->right_dongle->mutex);
         }
     }
 }
