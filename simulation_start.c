@@ -33,7 +33,7 @@ void coder_simulation(t_coder *coder)
         else 
         { 
             release_dongle(coder->left_dongle);
-            pthread_cond_wait(&coder->right_dongle->cond, &coder->right_dongle->mutex);
+            usleep(50);
         }
     }
 }

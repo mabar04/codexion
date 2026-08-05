@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <string.h>
 
+#define MAX_CODERS 2
 typedef struct s_sim        t_sim;
 typedef struct s_dongle     t_dongle;
 typedef struct s_coder      t_coder;
@@ -43,6 +44,7 @@ typedef struct s_dongle
     pthread_cond_t      cond;
     t_coder *owner;
     t_sim *sim;
+    t_heap *heap;
 } t_dongle;
 
 typedef struct s_sim
@@ -64,15 +66,21 @@ typedef struct s_sim
     t_coder *coders;
     pthread_mutex_t print_mutex;
     pthread_mutex_t stop_mutex;
-    // t_scheduler scheduler;
 
 } t_sim;
 
-// typedef enum s_scheduler
-// {
-//     FIFO,
-//     EDF
-// }   t_scheduler;
+typedef struct s_heap
+{
+    t_water *queqe[2];
+    char *type;
+    size_t filled;
+}   t_heap;
+
+typedef struct s_water
+{
+    t_coder *coder;
+    long sss;
+}   t_water;
 
 int init_sim(t_sim *sim, char **args);
 int check_values(char **av);
@@ -108,4 +116,6 @@ void coder_simulation(t_coder *coder);
 void *check_burnout(void *a);
 int monitor_thread(t_sim *sim, pthread_t *monitor);
 int check_all_finished(t_sim *sim);
+t_heap *create_heap();
+
 #endif
