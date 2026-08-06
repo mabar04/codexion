@@ -55,7 +55,53 @@ int heap_push(t_coder *coder, t_heap *heap)
     return 1;
 }
 
-t_coder *heap_pop(t_heap *heap)
+int node_exists(t_heap *heap, int index)
 {
-   
+    if (index < heap->filled && heap->queqe[index] != NULL)
+        return 1;
+    return 0;
+}
+
+void swap_coders(t_heap *heap, int index1, int index2)
+{
+    t_water *tmp;
+    tmp = heap->queqe[index1];
+    heap->queqe[index1] = heap->queqe[index2];
+    heap->queqe[index2] = tmp;
+}
+
+t_water *heap_pop(t_heap *heap)
+{
+    t_water *top;
+    t_water *smallest;
+    size_t i;
+    int smallest_index;
+
+    if (heap->filled == 0)
+        return NULL;
+    top = heap->queqe[0];
+    heap->queqe[0] = heap->queqe[heap->filled - 1];
+    i = 0;
+    heap->filled--;
+    while (1)
+    {
+        smallest_index = 0;
+        smallest = heap->queqe[i];
+        if (node_exists(heap, i*2 + 1) && heap->queqe[i*2 + 1]->sss < smallest->sss)
+        {
+            smallest = heap->queqe[i*2 + 1];
+            smallest_index = i*2 + 1;
+        }
+        if (node_exists(heap, i*2 + 2) && heap->queqe[i*2 + 2]->sss < smallest->sss)
+        {
+            smallest = heap->queqe[i*2 + 2];
+            smallest_index = i*2 + 2;
+        }    
+        if (smallest == heap->queqe[i])
+            break;
+        swap_coders(heap, i , smallest_index);
+        i = smallest_index;        
+    }
+    heap->queqe[heap->filled] = NULL;
+    return top;
 }
