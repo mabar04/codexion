@@ -28,7 +28,7 @@ int compare_coders(t_heap *heap, int parent, int child)
 
 int heap_push(t_coder *coder, t_heap *heap)
 {
-    t_water *waiter;
+    t_waiter *waiter;
     size_t i;
     int child;
     int parent_index;
@@ -64,16 +64,16 @@ int node_exists(t_heap *heap, int index)
 
 void swap_coders(t_heap *heap, int index1, int index2)
 {
-    t_water *tmp;
+    t_waiter *tmp;
     tmp = heap->queqe[index1];
     heap->queqe[index1] = heap->queqe[index2];
     heap->queqe[index2] = tmp;
 }
 
-t_water *heap_pop(t_heap *heap)
+t_waiter *heap_pop(t_heap *heap)
 {
-    t_water *top;
-    t_water *smallest;
+    t_waiter *top;
+    t_waiter *smallest;
     size_t i;
     int smallest_index;
 

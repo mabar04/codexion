@@ -57,9 +57,12 @@ int initialize_dongles(t_sim *sim)
         (*sim).dongles[i].available_at = 0;
         (*sim).dongles[i].owner = NULL;
         sim->dongles[i].sim = sim;
+        if (sim->dongles[i].heap = create_heap() == NULL)
+            return 0;
         if(create_mutex_cond(&(sim->dongles[i])) == 0)
         {
             clear_mutexex(sim, i);
+            free(sim->dongles[i].heap);
             return 0;
         }
         i++;

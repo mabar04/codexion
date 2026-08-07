@@ -19,6 +19,16 @@ size_t heap_size(t_heap *heap)
 
 void heap_destroy(t_heap *heap)
 {
-        free(heap);
-
+    free(heap);
 }
+
+// t_waiter *create_waiter()
+// {
+//     t_waiter *waiter;
+//     waiter = (t_waiter *)malloc (sizeof(t_waiter));
+//     if (!waiter)
+//         return (NULL);
+//     waiter->coder = NULL;
+//     waiter->sss = 0;
+//     return waiter;
+// }

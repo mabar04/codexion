@@ -9,6 +9,7 @@ void free_sim(t_sim *sim)
     {
         pthread_mutex_destroy(&((*sim).dongles[i].mutex));
         pthread_cond_destroy(&((*sim).dongles[i].cond));
+		free(sim->dongles[i].heap);
         i++;
     }
     free((sim->coders));

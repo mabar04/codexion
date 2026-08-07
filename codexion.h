@@ -71,16 +71,16 @@ typedef struct s_sim
 
 typedef struct s_heap
 {
-    t_water *queqe[2];
+    t_waiter *queqe[2];
     char *type;
     size_t filled;
 }   t_heap;
 
-typedef struct s_water
+typedef struct s_waiter
 {
     t_coder *coder;
     long sss;
-}   t_water;
+}   t_waiter;
 
 int init_sim(t_sim *sim, char **args);
 int check_values(char **av);
@@ -117,5 +117,7 @@ void *check_burnout(void *a);
 int monitor_thread(t_sim *sim, pthread_t *monitor);
 int check_all_finished(t_sim *sim);
 t_heap *create_heap();
+int heap_push(t_coder *coder, t_heap *heap);
+t_waiter *heap_pop(t_heap *heap);
 
 #endif
