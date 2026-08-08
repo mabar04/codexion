@@ -1,32 +1,30 @@
 #include "codexion.h"
 
-int acquire_dongle(t_dongle *dongle) 
+int acquire_dongle(t_dongle *dongle, t_coder *coder) 
 {
     struct timespec ts;
 
     if(check_simulation_running(dongle->sim))
         return 0;
     pthread_mutex_lock(&dongle->mutex);
-    if (dongle->owner != NULL)
-        sim_printf(dongle->owner, dongle->available_at, "dongle is availaible at");
-    while(dongle->is_used || get_time_ms() < dongle->available_at) 
+    heap_push(coder, dongle->heap);
+    while(dongle->is_used || get_time_ms() < dongle->available_at || coder != heap_top(dongle->heap)->coder) 
     {
-        if (dongle->is_used)
+        if (dongle->is_used || coder != heap_top(dongle->heap)->coder)
             pthread_cond_wait(&dongle->cond, &dongle->mutex);
         else if (get_time_ms() < dongle->available_at)
         {
             ts = ms_to_timespec(dongle->available_at);
             pthread_cond_timedwait(&dongle->cond, &dongle->mutex,&ts);
         }
-
         if(check_simulation_running(dongle->sim)) 
         {
             pthread_mutex_unlock(&dongle->mutex); 
             return 0;
         }
     }
+    heap_pop(dongle->heap);
     dongle->is_used = 1;
-    
     pthread_mutex_unlock(&dongle->mutex);
     return 1; 
 } 

@@ -36,7 +36,14 @@ int heap_push(t_coder *coder, t_heap *heap)
     i = heap->filled;
     if (heap->filled >= MAX_CODERS)
         return 0;
-    heap->queqe[i] = coder;
+    heap->queqe[i] = create_waiter();
+    if (!heap->queqe[i])
+        return 0;
+    heap->queqe[i]->coder = coder;
+    if (!strcmp(heap->type,"edf"))
+        heap->queqe[i]->sss = coder->last_compile_start + coder->sim->time_to_burnout;
+    else
+        heap->queqe[i]->sss = heap->filled;
     while (i > 0)
     {
         child = i;
@@ -55,7 +62,7 @@ int heap_push(t_coder *coder, t_heap *heap)
     return 1;
 }
 
-int node_exists(t_heap *heap, int index)
+int node_exists(t_heap *heap, size_t index)
 {
     if (index < heap->filled && heap->queqe[index] != NULL)
         return 1;
@@ -103,5 +110,7 @@ t_waiter *heap_pop(t_heap *heap)
         i = smallest_index;        
     }
     heap->queqe[heap->filled] = NULL;
+    free(top);
+    top = NULL;
     return top;
 }

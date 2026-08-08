@@ -14,7 +14,8 @@
 typedef struct s_sim        t_sim;
 typedef struct s_dongle     t_dongle;
 typedef struct s_coder      t_coder;
-// typedef enum s_scheduler    t_scheduler;
+typedef struct s_heap   t_heap;
+typedef struct s_waiter t_waiter;
 
 typedef struct s_coder
 {
@@ -56,7 +57,7 @@ typedef struct s_sim
     int required_compiles;
     long time_to_cooldown;
     long    start_time;
-
+    char    *type;
     size_t number_of_coders;
     size_t number_of_dongles;
 
@@ -92,7 +93,6 @@ void free_sim(t_sim *sim);
 void	print_sim_state(t_sim *sim);
 int create_mutex_cond(t_dongle *dongle);
 void clear_mutexex(t_sim *sim, size_t k);
-int acquire_dongle(t_dongle *dongle);
 void release_dongle(t_dongle *dongle);
 int try_acquire_dongle(t_dongle *dongle);
 void compile(t_coder *coder);
@@ -112,12 +112,18 @@ void write_lastcompile(t_coder *coder);
 void release_dongle_cooldown(t_dongle *dongle);
 struct timespec ms_to_timespec(long ms);
 void sim_completed(t_sim *sim);
-void coder_simulation(t_coder *coder);
 void *check_burnout(void *a);
 int monitor_thread(t_sim *sim, pthread_t *monitor);
 int check_all_finished(t_sim *sim);
 t_heap *create_heap();
 int heap_push(t_coder *coder, t_heap *heap);
 t_waiter *heap_pop(t_heap *heap);
-
+int acquire_dongle(t_dongle *dongle, t_coder *coder);
+t_waiter *heap_top(t_heap *heap);
+int heap_empty(t_heap *heap);
+size_t heap_size(t_heap *heap);
+void heap_destroy(t_heap *heap);
+void heap_info(t_heap *heap);
+t_waiter *create_waiter();
+int coder_simulation(t_coder *coder);
 #endif

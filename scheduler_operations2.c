@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-t_coder *heap_top(t_heap *heap)
+t_waiter *heap_top(t_heap *heap)
 {
     return heap->queqe[0];
 }
@@ -21,14 +21,3 @@ void heap_destroy(t_heap *heap)
 {
     free(heap);
 }
-
-// t_waiter *create_waiter()
-// {
-//     t_waiter *waiter;
-//     waiter = (t_waiter *)malloc (sizeof(t_waiter));
-//     if (!waiter)
-//         return (NULL);
-//     waiter->coder = NULL;
-//     waiter->sss = 0;
-//     return waiter;
-// }

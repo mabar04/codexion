@@ -57,8 +57,10 @@ int initialize_dongles(t_sim *sim)
         (*sim).dongles[i].available_at = 0;
         (*sim).dongles[i].owner = NULL;
         sim->dongles[i].sim = sim;
-        if (sim->dongles[i].heap = create_heap() == NULL)
+        sim->dongles[i].heap = create_heap();
+        if (sim->dongles[i].heap == NULL)
             return 0;
+        sim->dongles[i].heap->type = sim->type;
         if(create_mutex_cond(&(sim->dongles[i])) == 0)
         {
             clear_mutexex(sim, i);
@@ -80,6 +82,7 @@ int    init_sim(t_sim *sim, char **argv)
     sim->time_to_refactor = valid_long(argv[4]);
     sim->required_compiles = valid_int(argv[5]);
     sim->time_to_cooldown = valid_long(argv[6]);
+    sim->type = argv[7];
     sim->stop = 0;
     sim->start_time = get_time_ms();
     sim->coders = initialise_coders(sim, sim->number_of_coders);

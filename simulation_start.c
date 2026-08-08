@@ -10,12 +10,12 @@ int check_simulation_running(t_sim *sim)
     return i;
 } 
 
-void coder_simulation(t_coder *coder) 
+int coder_simulation(t_coder *coder) 
 {
     while(!check_simulation_running(coder->sim)) 
     {
-        if (!acquire_dongle(coder->left_dongle))
-            return;
+        if (!acquire_dongle(coder->left_dongle, coder))
+            return 0    ;
         if (try_acquire_dongle(coder->right_dongle)) 
         {
             compile(coder); 
@@ -25,7 +25,7 @@ void coder_simulation(t_coder *coder)
             if (read_numbercompiles(coder) == coder->sim->required_compiles)
             {
                 modify_finished(coder, 1);
-                return;
+                return 1;
             }
             debug(coder); 
             refactor(coder); 
@@ -36,4 +36,5 @@ void coder_simulation(t_coder *coder)
             usleep(50);
         }
     }
+    return 0;
 }

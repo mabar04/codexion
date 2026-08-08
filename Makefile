@@ -1,7 +1,7 @@
 NAME = codexion
 
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -O0
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -g -O0 
 THREAD_FLAGS = -lpthread
 
 SRC = main.c monitor.c\
@@ -10,6 +10,7 @@ SRC = main.c monitor.c\
       helper_functions.c coder_readmutex.c\
       helper_functions2.c helper_functions3.c\
       simalation_creation.c simulation_start.c\
+      scheduler_operations.c scheduler_operations2.c
 
 
 OBJ = $(SRC:.c=.o)
@@ -19,7 +20,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(THREAD_FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c
+%.o: %.
 	$(CC) $(THREAD_FLAGS) -c $< -o $@
 
 clean:

@@ -54,3 +54,10 @@ void	msleep(t_sim *sim, long ms)
         usleep(20);
     }
 }
+
+void heap_info(t_heap *heap)
+{
+    printf("waiter %p\n", heap->queqe);
+    printf("filled: %ld\n", heap->filled);
+    printf("type %s \n", heap->type);
+}

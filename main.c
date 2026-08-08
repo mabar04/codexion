@@ -7,7 +7,8 @@ void *coder_routine(void *a)
     coder = (t_coder *)a;
     while(!check_simulation_running(coder->sim))
     {
-        coder_simulation(coder);
+        if (coder_simulation(coder) == 1)
+            break;
     }
     return NULL;
 }
@@ -40,10 +41,8 @@ void join_threads(t_sim *sim)
 int main(int ac, char **av)
 {
     t_sim *sim;
-    size_t i;
     pthread_t monitor;
 
-    i = 0;
     if (ac != 9)
     {
         printf("Missing arguments\n");
