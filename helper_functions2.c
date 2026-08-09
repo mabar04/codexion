@@ -1,63 +1,73 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   helper_functions2.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/09 14:33:16 by mabar             #+#    #+#             */
+/*   Updated: 2026/08/09 15:46:08 by mabar            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
-int create_mutex_cond(t_dongle *dongle)
+int	create_mutex_cond(t_dongle *dongle)
 {
-    if(pthread_mutex_init(&dongle->mutex, NULL) != 0)
-        return 0;
-    if (pthread_cond_init(&dongle->cond, NULL) != 0)
-    {
-        pthread_mutex_destroy(&dongle->mutex);
-        return 0;
-    }
-    return 1;
+	if (pthread_mutex_init(&dongle->mutex, NULL) != 0)
+		return (0);
+	if (pthread_cond_init(&dongle->cond, NULL) != 0)
+	{
+		pthread_mutex_destroy(&dongle->mutex);
+		return (0);
+	}
+	return (1);
 }
 
-void clear_mutexex(t_sim *sim, size_t k)
+void	clear_mutexex(t_sim *sim, size_t k)
 {
-    size_t i;
+	size_t	i;
 
-    i = 0;
-    while(i < k)
-    {
-        pthread_mutex_destroy(&(sim->dongles[i].mutex));
-        pthread_cond_destroy(&(sim->dongles[i].cond));
-        i++;
-    }
+	i = 0;
+	while (i < k)
+	{
+		pthread_mutex_destroy(&(sim->dongles[i].mutex));
+		pthread_cond_destroy(&(sim->dongles[i].cond));
+		i++;
+	}
 }
 
-long get_time_ms(void)
+long	get_time_ms(void)
 {
-    struct timeval tv;
+	struct timeval	tv;
 
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000L) + (tv.tv_usec / 1000L);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000L) + (tv.tv_usec / 1000L));
 }
 
-void sim_printf(t_coder *coder, long time, char *task)
+void	sim_printf(t_coder *coder, long time, char *task)
 {
-    if (check_simulation_running(coder->sim) && strcmp(task, "burned out") != 0)
-        return;
-    pthread_mutex_lock(&coder->sim->print_mutex);
-    printf("%lu %zu %s\n", time, coder->coder_id, task);
-    pthread_mutex_unlock(&coder->sim->print_mutex);
+	pthread_mutex_lock(&coder->sim->print_mutex);
+	if (check_simulation_running(coder->sim))
+	{
+		if (strcmp(task, "burned out") == 0)
+			printf("%lu %zu %s\n", time, coder->coder_id, task);
+		pthread_mutex_unlock(&coder->sim->print_mutex);
+		return ;
+	}
+	printf("%lu %zu %s\n", time, coder->coder_id, task);
+	pthread_mutex_unlock(&coder->sim->print_mutex);
 }
 
 void	msleep(t_sim *sim, long ms)
 {
-	long start;
+	long	start;
 
-    start = get_time_ms();
-    while (!check_simulation_running(sim))
-    {
-        if (get_time_ms() - start >= ms)
-            break;
-        usleep(20);
-    }
-}
-
-void heap_info(t_heap *heap)
-{
-    printf("waiter %p\n", heap->queqe);
-    printf("filled: %ld\n", heap->filled);
-    printf("type %s \n", heap->type);
+	start = get_time_ms();
+	while (!check_simulation_running(sim))
+	{
+		if (get_time_ms() - start >= ms)
+			break ;
+		usleep(20);
+	}
 }

@@ -1,40 +1,63 @@
-#include "codexion.h" 
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simulation_start.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/09 14:33:17 by mabar             #+#    #+#             */
+/*   Updated: 2026/08/09 15:46:08 by mabar            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int check_simulation_running(t_sim *sim) 
-{ 
-    int i; 
-    
-    pthread_mutex_lock(&sim->stop_mutex); 
-    i = sim->stop; 
-    pthread_mutex_unlock(&sim->stop_mutex); 
-    return i;
-} 
+#include "codexion.h"
 
-int coder_simulation(t_coder *coder) 
+int	check_simulation_running(t_sim *sim)
 {
-    while(!check_simulation_running(coder->sim)) 
-    {
-        if (!acquire_dongle(coder->left_dongle, coder))
-            return 0    ;
-        if (try_acquire_dongle(coder->right_dongle)) 
-        {
-            compile(coder); 
-            increment_compiles(coder);
-            release_dongle_cooldown(coder->right_dongle); 
-            release_dongle_cooldown(coder->left_dongle);
-            if (read_numbercompiles(coder) == coder->sim->required_compiles)
-            {
-                modify_finished(coder, 1);
-                return 1;
-            }
-            debug(coder); 
-            refactor(coder); 
-        } 
-        else 
-        { 
-            release_dongle(coder->left_dongle);
-            usleep(50);
-        }
-    }
-    return 0;
+	int	i;
+
+	pthread_mutex_lock(&sim->stop_mutex);
+	i = sim->stop;
+	pthread_mutex_unlock(&sim->stop_mutex);
+	return (i);
+}
+
+static int	run_simualtion(t_coder *coder)
+{
+	sim_printf(coder, get_time_ms() - coder->sim->start_time,
+		"has taken a dongle");
+	sim_printf(coder, get_time_ms() - coder->sim->start_time,
+		"has taken a dongle");
+	compile(coder);
+	increment_compiles(coder);
+	release_dongle_cooldown(coder->right_dongle);
+	release_dongle_cooldown(coder->left_dongle);
+	if (read_numbercompiles(coder) == coder->sim->required_compiles)
+	{
+		modify_finished(coder, 1);
+		return (1);
+	}
+	debug(coder);
+	refactor(coder);
+	return (0);
+}
+
+int	coder_simulation(t_coder *coder)
+{
+	while (!check_simulation_running(coder->sim))
+	{
+		if (!acquire_dongle(coder->left_dongle, coder))
+			return (0);
+		if (try_acquire_dongle(coder->right_dongle))
+		{
+			if (run_simualtion(coder) == 1)
+				return (1);
+		}
+		else
+		{
+			release_dongle(coder->left_dongle);
+			usleep(50);
+		}
+	}
+	return (0);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_functions3.c                                :+:      :+:    :+:   */
+/*   scheduler_operations3.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,35 +12,36 @@
 
 #include "codexion.h"
 
-struct timespec	ms_to_timespec(long ms)
+t_heap	*create_heap(void)
 {
-	struct timespec	ts;
-
-	ts.tv_sec = ms / 1000;
-	ts.tv_nsec = (ms % 1000) * 1000000L;
-	return (ts);
-}
-
-t_waiter	*create_waiter(void)
-{
-	t_waiter	*waiter;
-
-	waiter = (t_waiter *)malloc(sizeof(t_waiter));
-	if (!waiter)
-		return (NULL);
-	waiter->coder = NULL;
-	waiter->sss = 0;
-	return (waiter);
-}
-
-void	awake_coders(t_sim *sim)
-{
+	t_heap	*heap;
 	size_t	i;
 
 	i = 0;
-	while (i < sim->number_of_dongles)
+	heap = (t_heap *)malloc(sizeof(t_heap));
+	if (!heap)
+		return (NULL);
+	while (i < MAX_CODERS)
 	{
-		pthread_cond_broadcast(&sim->dongles[i].cond);
+		heap->queqe[i] = NULL;
 		i++;
 	}
+	heap->filled = 0;
+	return (heap);
+}
+
+int	node_exists(t_heap *heap, size_t index)
+{
+	if (index < heap->filled && heap->queqe[index] != NULL)
+		return (1);
+	return (0);
+}
+
+void	swap_coders(t_heap *heap, int index1, int index2)
+{
+	t_waiter	*tmp;
+
+	tmp = heap->queqe[index1];
+	heap->queqe[index1] = heap->queqe[index2];
+	heap->queqe[index2] = tmp;
 }
