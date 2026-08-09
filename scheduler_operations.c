@@ -6,7 +6,7 @@
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/09 14:33:16 by mabar             #+#    #+#             */
-/*   Updated: 2026/08/09 15:46:08 by mabar            ###   ########.fr       */
+/*   Updated: 2026/08/09 18:15:39 by mabar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ static void	helper_pop(int *smallest_index, t_waiter **smallest, t_heap *heap,
 		*smallest_index = 0;
 		*smallest = heap->queqe[*i];
 		if (node_exists(heap, (*i) * 2 + 1) && heap->queqe[(*i) * 2
-				+ 1]->sss < (*smallest)->sss)
+			+ 1]->sss < (*smallest)->sss)
 		{
 			(*smallest) = heap->queqe[(*i) * 2 + 1];
 			(*smallest_index) = (*i) * 2 + 1;
 		}
 		if (node_exists(heap, (*i) * 2 + 2) && heap->queqe[(*i) * 2
-				+ 2]->sss < (*smallest)->sss)
+			+ 2]->sss < (*smallest)->sss)
 		{
 			(*smallest) = heap->queqe[(*i) * 2 + 2];
 			(*smallest_index) = (*i) * 2 + 2;
