@@ -42,6 +42,33 @@ static int	run_simualtion(t_coder *coder)
 	return (0);
 }
 
+static int	wait_for_dongle(t_dongle *dongle)
+{
+	struct timespec	ts;
+
+	pthread_mutex_lock(&dongle->mutex);
+	while (dongle->is_used || get_time_ms() < dongle->available_at)
+	{
+		if (check_simulation_running(dongle->sim))
+		{
+			pthread_mutex_unlock(&dongle->mutex);
+			return (0);
+		}
+
+		if (dongle->is_used)
+		{
+			pthread_cond_wait(&dongle->cond, &dongle->mutex);
+		}
+		else
+		{
+			ts = ms_to_timespec(dongle->available_at);
+			pthread_cond_timedwait(&dongle->cond, &dongle->mutex, &ts);
+		}
+	}
+	pthread_mutex_unlock(&dongle->mutex);
+	return (1);
+}
+
 int	coder_simulation(t_coder *coder)
 {
 	while (!check_simulation_running(coder->sim))
@@ -56,7 +83,8 @@ int	coder_simulation(t_coder *coder)
 		else
 		{
 			release_dongle(coder->left_dongle);
-			usleep(50);
+			if (!wait_for_dongle(coder->right_dongle))
+				return (0);
 		}
 	}
 	return (0);
