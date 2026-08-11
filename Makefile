@@ -11,7 +11,7 @@ SRC = main.c monitor.c\
       helper_functions2.c helper_functions3.c\
       simalation_creation.c simulation_start.c\
       scheduler_operations.c scheduler_operations2.c\
-      scheduler_operations3.c
+      scheduler_operations3.c simulation_creationhelper.c
 
 
 OBJ = $(SRC:.c=.o)

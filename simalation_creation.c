@@ -6,7 +6,7 @@
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/09 14:33:16 by mabar             #+#    #+#             */
-/*   Updated: 2026/08/11 15:58:09 by mabar            ###   ########.fr       */
+/*   Updated: 2026/08/11 20:04:45 by mabar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,43 +56,6 @@ static t_dongle	*coders_to_dongles(t_sim *sim)
 		i++;
 	}
 	return (dongles);
-}
-
-int	initialize_dongles(t_sim *sim)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	while (i < (*sim).number_of_dongles)
-	{
-		(*sim).dongles[i].dongle_id = i + 1;
-		(*sim).dongles[i].is_used = 0;
-		(*sim).dongles[i].available_at = 0;
-		(*sim).dongles[i].owner = NULL;
-		sim->dongles[i].sim = sim;
-		sim->dongles[i].heap = create_heap();
-		if (sim->dongles[i].heap == NULL)
-			break ;
-		sim->dongles[i].heap->type = sim->type;
-		if (create_mutex_cond(&(sim->dongles[i])) == 0)
-		{
-			heap_destroy(sim->dongles[i].heap);
-			break ;
-		}
-		i++;
-	}
-	if (i == sim->number_of_dongles)
-		return (1);
-	j = 0;
-	while (j < i)
-	{
-		pthread_mutex_destroy(&sim->dongles[j].mutex);
-		pthread_cond_destroy(&sim->dongles[j].cond);
-		heap_destroy(sim->dongles[j].heap);
-		j++;
-	}
-	return (0);
 }
 
 static int	helper_sim(t_sim *sim)

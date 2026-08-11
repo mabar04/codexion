@@ -6,7 +6,7 @@
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/09 14:33:16 by mabar             #+#    #+#             */
-/*   Updated: 2026/08/11 15:58:08 by mabar            ###   ########.fr       */
+/*   Updated: 2026/08/11 20:04:45 by mabar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,27 +52,13 @@ void	join_threads(t_sim *sim, size_t count)
 	}
 }
 
-int	main(int ac, char **av)
+static int	run_simulation(t_sim *sim)
 {
-	t_sim		*sim;
 	pthread_t	monitor;
 	size_t		created;
-	int			status;
 
-	if (ac != 9)
-	{
-		printf("Missing arguments\n");
-		return (2);
-	}
-	if (check_values(av) == 0)
-		return (2);
-	sim = (t_sim *)malloc(sizeof(t_sim));
-	if (!sim)
-		return (3);
-	if (init_sim(sim, av + 1) == 0)
-		return (printf("Error in the inistialization\n"), free(sim), 4);
 	if (monitor_thread(sim, &monitor) == -1)
-		return (free_sim(sim), 20);
+		return (20);
 	created = initialise_threads(sim);
 	if (created != sim->number_of_coders)
 	{
@@ -85,10 +71,28 @@ int	main(int ac, char **av)
 	if (pthread_join(monitor, NULL) != 0)
 	{
 		printf("[MAIN] ERROR: pthread_join failed.\n");
-		return (free_sim(sim), 80);
+		join_threads(sim, created);
+		return (80);
 	}
 	join_threads(sim, created);
-	status = (created != sim->number_of_coders);
+	return (0);
+}
+
+int	main(int ac, char **av)
+{
+	t_sim	*sim;
+	int		status;
+
+	if (ac != 9)
+		return (printf("Missing arguments\n"), 2);
+	if (!check_values(av))
+		return (2);
+	sim = malloc(sizeof(t_sim));
+	if (!sim)
+		return (3);
+	if (!init_sim(sim, av + 1))
+		return (printf("Error in the initialization\n"), free(sim), 4);
+	status = run_simulation(sim);
 	free_sim(sim);
 	return (status);
 }
