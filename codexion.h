@@ -128,6 +128,7 @@ int						check_all_finished(t_sim *sim);
 t_heap					*create_heap(void);
 int						heap_push(t_coder *coder, t_heap *heap);
 t_waiter				*heap_pop(t_heap *heap);
+int					heap_remove_coder(t_coder *coder, t_heap *heap);
 int						acquire_dongle(t_dongle *dongle, t_coder *coder);
 t_waiter				*heap_top(t_heap *heap);
 int						heap_empty(t_heap *heap);

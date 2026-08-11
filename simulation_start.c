@@ -28,8 +28,15 @@ static int	run_simualtion(t_coder *coder)
 		"has taken a dongle");
 	sim_printf(coder, get_time_ms() - coder->sim->start_time,
 		"has taken a dongle");
-	heap_pop(coder->right_dongle->heap);
-	heap_pop(coder->left_dongle->heap);
+	pthread_mutex_lock(&coder->right_dongle->mutex);
+	heap_remove_coder(coder, coder->right_dongle->heap);
+	pthread_mutex_unlock(&coder->right_dongle->mutex);
+	if (coder->left_dongle != coder->right_dongle)
+	{
+		pthread_mutex_lock(&coder->left_dongle->mutex);
+		heap_remove_coder(coder, coder->left_dongle->heap);
+		pthread_mutex_unlock(&coder->left_dongle->mutex);
+	}
 	compile(coder);
 	increment_compiles(coder);
 	release_dongle_cooldown(coder->right_dongle);

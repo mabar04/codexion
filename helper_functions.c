@@ -21,9 +21,10 @@ void	free_sim(t_sim *sim)
 	{
 		pthread_mutex_destroy(&((*sim).dongles[i].mutex));
 		pthread_cond_destroy(&((*sim).dongles[i].cond));
-		free(sim->dongles[i].heap);
+		heap_destroy(sim->dongles[i].heap);
 		i++;
 	}
+	free_coder_mutex(sim->coders, sim->number_of_coders);
 	free((sim->coders));
 	free((sim->dongles));
 	pthread_mutex_destroy(&(*sim).print_mutex);

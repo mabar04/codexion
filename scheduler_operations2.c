@@ -31,5 +31,12 @@ size_t	heap_size(t_heap *heap)
 
 void	heap_destroy(t_heap *heap)
 {
+	size_t	i;
+
+	if (!heap)
+		return ;
+	i = 0;
+	while (i < heap->filled)
+		free(heap->queqe[i++]);
 	free(heap);
 }

@@ -33,6 +33,7 @@ void	clear_mutexex(t_sim *sim, size_t k)
 	{
 		pthread_mutex_destroy(&(sim->dongles[i].mutex));
 		pthread_cond_destroy(&(sim->dongles[i].cond));
+		heap_destroy(sim->dongles[i].heap);
 		i++;
 	}
 }
@@ -51,11 +52,11 @@ void	sim_printf(t_coder *coder, long time, char *task)
 	if (check_simulation_running(coder->sim))
 	{
 		if (strcmp(task, "burned out") == 0)
-			printf("%lu %zu %s\n", time, coder->coder_id, task);
+			printf("%ld %zu %s\n", time, coder->coder_id, task);
 		pthread_mutex_unlock(&coder->sim->print_mutex);
 		return ;
 	}
-	printf("%lu %zu %s\n", time, coder->coder_id, task);
+	printf("%ld %zu %s\n", time, coder->coder_id, task);
 	pthread_mutex_unlock(&coder->sim->print_mutex);
 }
 

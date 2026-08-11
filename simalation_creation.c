@@ -61,6 +61,7 @@ static t_dongle	*coders_to_dongles(t_sim *sim)
 int	initialize_dongles(t_sim *sim)
 {
 	size_t	i;
+	size_t	j;
 
 	i = 0;
 	while (i < (*sim).number_of_dongles)
@@ -72,23 +73,33 @@ int	initialize_dongles(t_sim *sim)
 		sim->dongles[i].sim = sim;
 		sim->dongles[i].heap = create_heap();
 		if (sim->dongles[i].heap == NULL)
-			return (0);
+			break ;
 		sim->dongles[i].heap->type = sim->type;
 		if (create_mutex_cond(&(sim->dongles[i])) == 0)
 		{
-			clear_mutexex(sim, i);
-			free(sim->dongles[i].heap);
-			return (0);
+			heap_destroy(sim->dongles[i].heap);
+			break ;
 		}
 		i++;
 	}
-	return (1);
+	if (i == sim->number_of_dongles)
+		return (1);
+	j = 0;
+	while (j < i)
+	{
+		pthread_mutex_destroy(&sim->dongles[j].mutex);
+		pthread_cond_destroy(&sim->dongles[j].cond);
+		heap_destroy(sim->dongles[j].heap);
+		j++;
+	}
+	return (0);
 }
 
 static int	helper_sim(t_sim *sim)
 {
 	if (initialize_dongles(sim) == 0)
 	{
+		free_coder_mutex(sim->coders, sim->number_of_coders);
 		free(sim->coders);
 		free(sim->dongles);
 		return (0);
@@ -131,7 +142,10 @@ int	init_sim(t_sim *sim, char **argv)
 		return (0);
 	sim->dongles = coders_to_dongles(sim);
 	if (!sim->dongles)
+	{
+		free_coder_mutex(sim->coders, sim->number_of_coders);
 		return (free(sim->coders), 0);
+	}
 	if (helper_sim(sim) == 0)
 		return (0);
 	return (1);

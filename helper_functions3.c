@@ -40,7 +40,9 @@ void	awake_coders(t_sim *sim)
 	i = 0;
 	while (i < sim->number_of_dongles)
 	{
+		pthread_mutex_lock(&sim->dongles[i].mutex);
 		pthread_cond_broadcast(&sim->dongles[i].cond);
+		pthread_mutex_unlock(&sim->dongles[i].mutex);
 		i++;
 	}
 }

@@ -28,7 +28,7 @@ static int	help_initialise(t_coder *coder, t_heap *heap, size_t i)
 		return (0);
 	heap->queqe[i]->coder = coder;
 	if (!strcmp(heap->type, "edf"))
-		heap->queqe[i]->sss = coder->last_compile_start
+		heap->queqe[i]->sss = read_lastcompile(coder)
 			+ coder->sim->time_to_burnout;
 	else
 		heap->queqe[i]->sss = heap->filled;
@@ -108,4 +108,45 @@ t_waiter	*heap_pop(t_heap *heap)
 	free(top);
 	top = NULL;
 	return (top);
+}
+
+int	heap_remove_coder(t_coder *coder, t_heap *heap)
+{
+	size_t	i;
+	size_t	parent;
+	size_t	child;
+
+	i = 0;
+	while (i < heap->filled && heap->queqe[i]->coder != coder)
+		i++;
+	if (i == heap->filled)
+		return (0);
+	free(heap->queqe[i]);
+	heap->filled--;
+	heap->queqe[i] = heap->queqe[heap->filled];
+	heap->queqe[heap->filled] = NULL;
+	if (i >= heap->filled)
+		return (1);
+	parent = (i - 1) / 2;
+	if (i > 0 && compare_coders(heap, parent, i))
+	{
+		while (i > 0 && compare_coders(heap, (i - 1) / 2, i))
+		{
+			swap_coders(heap, i, (i - 1) / 2);
+			i = (i - 1) / 2;
+		}
+		return (1);
+	}
+	child = i * 2 + 1;
+	while (child < heap->filled)
+	{
+		if (child + 1 < heap->filled && compare_coders(heap, child, child + 1))
+			child++;
+		if (!compare_coders(heap, i, child))
+			break ;
+		swap_coders(heap, i, child);
+		i = child;
+		child = i * 2 + 1;
+	}
+	return (1);
 }

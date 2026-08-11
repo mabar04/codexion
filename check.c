@@ -22,12 +22,14 @@ int	ft_putnbr(char s)
 
 int	check_valid(char *s)
 {
-	if (*s == '\0' || !s)
+	if (!s)
 		return (0);
 	while (*s >= 9 && *s <= 13)
 		s++;
 	if (*s == '+')
 		s++;
+	if (*s == '\0')
+		return (0);
 	while (*s >= '0' && *s <= '9')
 		s++;
 	if (*s == '\0')
@@ -38,22 +40,22 @@ int	check_valid(char *s)
 long	valid_long(char *s)
 {
 	unsigned long	result;
-	size_t			i;
+	unsigned long	digit;
 
-	i = 0;
 	result = 0;
 	if (!check_valid(s))
 		return (-1);
-	while (s[i] >= 9 && s[i] <= 13)
-		i++;
-	while (s[i])
+	while (*s >= 9 && *s <= 13)
+		s++;
+	if (*s == '+')
+		s++;
+	while (*s)
 	{
-		if (*s == '+')
-			s++;
-		if (result * 10 + ft_putnbr(s[i]) > LONG_MAX)
+		digit = ft_putnbr(*s);
+		if (result > ((unsigned long)LONG_MAX - digit) / 10)
 			return (-1);
-		result = result * 10 + ft_putnbr(s[i]);
-		i++;
+		result = result * 10 + digit;
+		s++;
 	}
 	return ((long)result);
 }

@@ -25,7 +25,7 @@ void	*coder_routine(void *a)
 	return (NULL);
 }
 
-static void	initialise_threads(t_sim *sim)
+static size_t	initialise_threads(t_sim *sim)
 {
 	size_t	i;
 
@@ -34,17 +34,18 @@ static void	initialise_threads(t_sim *sim)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL, coder_routine,
 				(void *)&sim->coders[i]) != 0)
-			break ;
+			return (i);
 		i++;
 	}
+	return (i);
 }
 
-void	join_threads(t_sim *sim)
+void	join_threads(t_sim *sim, size_t count)
 {
 	size_t	j;
 
 	j = 0;
-	while (j < sim->number_of_coders)
+	while (j < count)
 	{
 		pthread_join(sim->coders[j].thread, NULL);
 		j++;
@@ -55,6 +56,8 @@ int	main(int ac, char **av)
 {
 	t_sim		*sim;
 	pthread_t	monitor;
+	size_t		created;
+	int			status;
 
 	if (ac != 9)
 	{
@@ -70,12 +73,22 @@ int	main(int ac, char **av)
 		return (printf("Error in the inistialization\n"), free(sim), 4);
 	if (monitor_thread(sim, &monitor) == -1)
 		return (free_sim(sim), 20);
-	initialise_threads(sim);
+	created = initialise_threads(sim);
+	if (created != sim->number_of_coders)
+	{
+		printf("[MAIN] ERROR: pthread_create failed.\n");
+		pthread_mutex_lock(&sim->stop_mutex);
+		sim->stop = 1;
+		pthread_mutex_unlock(&sim->stop_mutex);
+		awake_coders(sim);
+	}
 	if (pthread_join(monitor, NULL) != 0)
 	{
 		printf("[MAIN] ERROR: pthread_join failed.\n");
 		return (free_sim(sim), 80);
 	}
-	join_threads(sim);
-	return (free_sim(sim), 1);
+	join_threads(sim, created);
+	status = (created != sim->number_of_coders);
+	free_sim(sim);
+	return (status);
 }

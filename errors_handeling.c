@@ -14,7 +14,7 @@
 
 int	check_values(char **av)
 {
-	if (valid_int(av[1]) == -1)
+	if (!valid_int(av[1]))
 		return (printf("Error in number_of_coders: %s", av[1]), 0);
 	if (valid_long(av[2]) == -1)
 		return (printf("Error in Time of burnout: %s", av[2]), 0);
@@ -24,7 +24,7 @@ int	check_values(char **av)
 		return (printf("Error in Time to debug: %s", av[4]), 0);
 	if (valid_long(av[5]) == -1)
 		return (printf("Error in Time to refactor: %s", av[5]), 0);
-	if (valid_int(av[6]) == -1)
+	if (valid_int(av[6]) <= 0)
 		return (printf("Error in number_of_compiles_required: %s", av[6]), 0);
 	if (valid_long(av[7]) == -1)
 		return (printf("Error in dongle_cooldown: %s", av[7]), 0);
