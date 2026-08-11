@@ -136,8 +136,9 @@ void					heap_destroy(t_heap *heap);
 void					heap_info(t_heap *heap);
 t_waiter				*create_waiter(void);
 int						coder_simulation(t_coder *coder);
-int						try_acquire_dongle(t_dongle *dongle);
 void					awake_coders(t_sim *sim);
 int						node_exists(t_heap *heap, size_t index);
 void					swap_coders(t_heap *heap, int index1, int index2);
+int						try_acquire_dongle(t_dongle *dongle, t_coder *coder);
+int						coder_in_heap(t_coder *coder, t_heap *heap);
 #endif

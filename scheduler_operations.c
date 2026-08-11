@@ -6,7 +6,7 @@
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/09 14:33:16 by mabar             #+#    #+#             */
-/*   Updated: 2026/08/09 18:15:39 by mabar            ###   ########.fr       */
+/*   Updated: 2026/08/11 15:58:09 by mabar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	heap_push(t_coder *coder, t_heap *heap)
 	int			child;
 	int			parent_index;
 
+	if (coder_in_heap(coder, heap))
+		return (0);
 	i = heap->filled;
 	if (help_initialise(coder, heap, i) == 0)
 		return (0);
@@ -59,8 +61,7 @@ int	heap_push(t_coder *coder, t_heap *heap)
 		else
 			break ;
 	}
-	heap->filled++;
-	return (1);
+	return (heap->filled++, 1);
 }
 
 static void	helper_pop(int *smallest_index, t_waiter **smallest, t_heap *heap,
@@ -71,13 +72,13 @@ static void	helper_pop(int *smallest_index, t_waiter **smallest, t_heap *heap,
 		*smallest_index = 0;
 		*smallest = heap->queqe[*i];
 		if (node_exists(heap, (*i) * 2 + 1) && heap->queqe[(*i) * 2
-			+ 1]->sss < (*smallest)->sss)
+				+ 1]->sss < (*smallest)->sss)
 		{
 			(*smallest) = heap->queqe[(*i) * 2 + 1];
 			(*smallest_index) = (*i) * 2 + 1;
 		}
 		if (node_exists(heap, (*i) * 2 + 2) && heap->queqe[(*i) * 2
-			+ 2]->sss < (*smallest)->sss)
+				+ 2]->sss < (*smallest)->sss)
 		{
 			(*smallest) = heap->queqe[(*i) * 2 + 2];
 			(*smallest_index) = (*i) * 2 + 2;

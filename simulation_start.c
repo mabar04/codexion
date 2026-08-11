@@ -6,7 +6,7 @@
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/09 14:33:17 by mabar             #+#    #+#             */
-/*   Updated: 2026/08/09 15:46:08 by mabar            ###   ########.fr       */
+/*   Updated: 2026/08/11 15:58:09 by mabar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ static int	run_simualtion(t_coder *coder)
 		"has taken a dongle");
 	sim_printf(coder, get_time_ms() - coder->sim->start_time,
 		"has taken a dongle");
+	heap_pop(coder->right_dongle->heap);
+	heap_pop(coder->left_dongle->heap);
 	compile(coder);
 	increment_compiles(coder);
 	release_dongle_cooldown(coder->right_dongle);
@@ -42,19 +44,19 @@ static int	run_simualtion(t_coder *coder)
 	return (0);
 }
 
-static int	wait_for_dongle(t_dongle *dongle)
+static int	wait_for_dongle(t_dongle *dongle, t_coder *coder)
 {
 	struct timespec	ts;
 
 	pthread_mutex_lock(&dongle->mutex);
 	while (dongle->is_used || get_time_ms() < dongle->available_at)
 	{
+		heap_push(coder, dongle->heap);
 		if (check_simulation_running(dongle->sim))
 		{
 			pthread_mutex_unlock(&dongle->mutex);
 			return (0);
 		}
-
 		if (dongle->is_used)
 		{
 			pthread_cond_wait(&dongle->cond, &dongle->mutex);
@@ -71,21 +73,28 @@ static int	wait_for_dongle(t_dongle *dongle)
 
 int	coder_simulation(t_coder *coder)
 {
+	int	left;
+	int	right;
+
 	while (!check_simulation_running(coder->sim))
 	{
-		if (!acquire_dongle(coder->left_dongle, coder))
-			return (0);
-		if (try_acquire_dongle(coder->right_dongle))
+		left = try_acquire_dongle(coder->left_dongle, coder);
+		if (!left)
 		{
-			if (run_simualtion(coder) == 1)
-				return (1);
+			if (!wait_for_dongle(coder->left_dongle, coder))
+				return (0);
+			continue ;
 		}
-		else
+		right = try_acquire_dongle(coder->right_dongle, coder);
+		if (!right)
 		{
 			release_dongle(coder->left_dongle);
-			if (!wait_for_dongle(coder->right_dongle))
+			if (!wait_for_dongle(coder->right_dongle, coder))
 				return (0);
+			continue ;
 		}
+		if (run_simualtion(coder) == 1)
+			return (1);
 	}
 	return (0);
 }

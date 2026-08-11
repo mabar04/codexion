@@ -6,7 +6,7 @@
 /*   By: mabar <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/09 14:33:16 by mabar             #+#    #+#             */
-/*   Updated: 2026/08/09 18:15:38 by mabar            ###   ########.fr       */
+/*   Updated: 2026/08/11 15:58:08 by mabar            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,18 @@ void	awake_coders(t_sim *sim)
 		pthread_cond_broadcast(&sim->dongles[i].cond);
 		i++;
 	}
+}
+
+int	coder_in_heap(t_coder *coder, t_heap *heap)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < heap->filled)
+	{
+		if (heap->queqe[i]->coder == coder)
+			return (1);
+		i++;
+	}
+	return (0);
 }
