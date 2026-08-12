@@ -1,8 +1,8 @@
 NAME = codexion
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -O0 
-THREAD_FLAGS = -lpthread
+CFLAGS = -Wall -Wextra -Werror
+THREAD_FLAGS = -pthread
 
 SRC = main.c monitor.c\
       check.c coder_mutex.c coder_operations.c\
@@ -21,7 +21,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(THREAD_FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.
+%.o: %.c
 	$(CC) $(THREAD_FLAGS) -c $< -o $@
 
 clean:

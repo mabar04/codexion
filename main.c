@@ -84,7 +84,7 @@ int	main(int ac, char **av)
 	int		status;
 
 	if (ac != 9)
-		return (printf("Missing arguments\n"), 2);
+		return (printf("Missing or extra arguments\n"), 2);
 	if (!check_values(av))
 		return (2);
 	sim = malloc(sizeof(t_sim));
